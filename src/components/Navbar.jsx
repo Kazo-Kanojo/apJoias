@@ -1,43 +1,64 @@
-import { Menu } from 'lucide-react';
-// Certifique-se de que o nome do arquivo da logo é Logo.png na pasta assets
-import LogoImg from '../assets/Logo.jpg'; 
+import { Menu, ChevronDown } from "lucide-react";
+import LogoImg from "../assets/Logo.jpg";
+import { Link } from "react-router-dom";
+import { useProducts } from "../context/ProductContext";
 
 export default function Navbar() {
-  const links = [ 'Início', 'Coleções', 'Sobre', 'Contato' ];
+  const { setCategoriaSelecionada } = useProducts();
+  const categorias = ["Todas", "Anéis", "Brincos", "Correntes", "Escapularios", "Pingentes", "Pulseira"];
+
+  const handleCategorySelect = (categoria) => {
+    setCategoriaSelecionada(categoria);
+    const seccao = document.getElementById("colecoes");
+    if (seccao) {
+      seccao.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <nav className="flex items-center justify-between px-8 py-5 bg-zinc-950 border-b border-zinc-900 sticky top-0 z-50">
-      {/* Bloco da Logo com animação suave de pulso */}
       <div className="flex items-center space-x-3 group">
-        <img 
-          src={LogoImg} 
-          alt="apJoias" 
-          className="h-14 w-auto object-contain transition-all duration-300 group-hover:scale-110" 
+        <img
+          src={LogoImg}
+          alt="apJoias"
+          className="h-14 w-auto object-contain transition-all duration-300 group-hover:scale-110"
         />
       </div>
-      
-      {/* Links de navegação centralizados e com efeito dourado */}
-      <div className="hidden md:flex space-x-8 text-sm uppercase tracking-widest text-zinc-400">
-        {links.map((item) => (
-          <a 
-            key={item}
-            href={`#${item.toLowerCase().replace('ç', 'c').replace('õ', 'o')}`} 
-            className="relative hover:text-white transition-colors duration-300 group py-1"
-          >
-            {item}
-            <span className="absolute bottom-0 left-0 w-0 h-px bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
-          </a>
-        ))}
+
+      <div className="hidden md:flex space-x-8 text-sm uppercase tracking-widest text-zinc-400 items-center">
+        <a href="#inicio" className="hover:text-white transition-colors duration-300">Início</a>
+        
+        <div className="relative group py-1 cursor-pointer">
+          <div className="flex items-center gap-1 hover:text-white transition-colors duration-300">
+            Coleções <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+          </div>
+          <div className="absolute top-full -left-4 mt-2 w-48 bg-zinc-900 border border-zinc-800 rounded shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+            <ul className="py-2 flex flex-col">
+              {categorias.map((cat) => (
+                <li key={cat}>
+                  <button 
+                    onClick={() => handleCategorySelect(cat)}
+                    className="w-full text-left px-4 py-2 hover:bg-zinc-800 hover:text-[#D4AF37] transition-colors"
+                  >
+                    {cat}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <a href="#sobre" className="hover:text-white transition-colors duration-300">Sobre</a>
+        <a href="#contato" className="hover:text-white transition-colors duration-300">Contato</a>
+        <Link to="/admin" className="hover:text-[#D4AF37] transition-colors duration-300">Admin</Link>
       </div>
 
       <div className="flex items-center space-x-5 text-white">
-        {/* Botão de ação direto para o WhatsApp na Navbar */}
-        <a 
+        <a
           href="#contato"
           className="hidden md:block relative overflow-hidden bg-[#D4AF37] text-zinc-950 px-6 py-2.5 text-xs uppercase tracking-widest font-bold transition-all duration-300 hover:bg-[#B8860B] hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] hover:-translate-y-0.5 group"
         >
-          <span className="relative z-10">Orçamentos</span>
-          {/* Efeito shimmer (brilho) no hover */}
+          <span className="relative z-10">Consultoria</span>
           <span className="absolute inset-0 block w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
         </a>
         <button className="md:hidden hover:text-[#D4AF37] transition-colors duration-300">
