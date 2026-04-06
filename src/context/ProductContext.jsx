@@ -36,22 +36,52 @@ export const ProductProvider = ({ children }) => {
 
   // Requer Token
   const addProduct = async (formData) => {
-    await fetch(`${apiUrl}/products`, {
-      method: 'POST',
-      headers: getAuthHeaders(), // <-- Enviando a "chave" da porta
-      body: formData,
-    });
-    fetchProducts();
+    try {
+      const response = await fetch(`${apiUrl}/products`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: formData,
+      });
+
+      // Se a resposta não for OK (ex: 400, 413, 500)
+      if (!response.ok) {
+        // Tenta ler a mensagem de erro do backend (se existir)
+        const errorData = await response.json().catch(() => null);
+        const errorMessage = errorData && errorData.error ? errorData.error : response.statusText;
+        throw new Error(`Erro ${response.status}: ${errorMessage}`);
+      }
+
+      fetchProducts();
+      return true; // Retorna sucesso
+    } catch (error) {
+      console.error("🔴 Erro detalhado ao adicionar produto:", error);
+      alert("Falha ao cadastrar: " + error.message);
+      return false; // Retorna falha
+    }
   };
 
   // Requer Token
   const updateProduct = async (id, formData) => {
-    await fetch(`${apiUrl}/products/${id}`, {
-      method: 'PUT',
-      headers: getAuthHeaders(),
-      body: formData,
-    });
-    fetchProducts();
+    try {
+      const response = await fetch(`${apiUrl}/products/${id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        const errorMessage = errorData && errorData.error ? errorData.error : response.statusText;
+        throw new Error(`Erro ${response.status}: ${errorMessage}`);
+      }
+
+      fetchProducts();
+      return true;
+    } catch (error) {
+      console.error("🔴 Erro detalhado ao atualizar produto:", error);
+      alert("Falha ao atualizar: " + error.message);
+      return false;
+    }
   };
 
   // Requer Token
